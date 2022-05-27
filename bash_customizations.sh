@@ -6,7 +6,7 @@ HISTFILESIZE=20000
 export DOCKER_BUILDKIT=1
 export EDITOR=vim
 
-PATH="${HOME}/bin":"${HOME}/.local/bin":${PATH}
+PATH="/usr/local/go/bin/":"${HOME}/bin":"${HOME}/.local/bin":${PATH}
 
 [ -f "${HOME}/.fzf.bash" ] && source "${HOME}/.fzf.bash"
 

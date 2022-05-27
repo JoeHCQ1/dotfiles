@@ -95,6 +95,6 @@ git () {
 }
 
 alias gs="git status"
-alias gm="git commit -m"
+alias gm="git commit"
 alias gp="git push"
 alias gpf="git push --force"
