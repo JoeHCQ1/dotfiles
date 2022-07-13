@@ -42,8 +42,6 @@ then
     alias chart=helm
 fi
 
-export KUBECONFIG="${HOME}/.kube/kubeconfig"
-
 alias here='echo $PWD'
 
 if which shellcheck >>/dev/null
@@ -52,11 +50,6 @@ then
 fi
 
 alias surrender='sudo chown -R $USER:$USER .'
-
-if which helm >>/dev/null
-then
-    alias chart="helm"
-fi
 
 alias refresh="source ~/.bashrc"
 
