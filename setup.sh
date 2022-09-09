@@ -119,9 +119,11 @@ mkdir -p "${LOCAL_BIN}"
 # Make goPath
 mkdir -p "${HOME}/go"
 
-info "Disabling ding bell alert" # https://unix.stackexchange.com/questions/73672/how-to-turn-off-the-beep-only-in-bash-tab-complete
-[ -f "${HOME}/.inputrc" ] || touch "${HOME}/.inputrc"
-add_line_to_file "set bell-style none" "${HOME}/.inputrc"
+disable_bell() {
+    info "Disabling ding bell alert" # https://unix.stackexchange.com/questions/73672/how-to-turn-off-the-beep-only-in-bash-tab-complete
+    [ -f "${HOME}/.inputrc" ] || touch "${HOME}/.inputrc"
+    add_line_to_file "set bell-style none" "${HOME}/.inputrc"
+}
 
 ###############################################################################
 # App install functions                                                       #
@@ -134,6 +136,11 @@ install_ansible() {
     sudo add-apt-repository --yes --update ppa:ansible/ansible
     info "installing ansible"
     sudo apt install -y ansible
+}
+
+install_azure_cli() {
+    # From https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
+    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 }
 
 install_docker() {
@@ -337,37 +344,42 @@ install_shellcheck() {
     make_executable "${dest}"
 }
 
-sudo apt-get update && sudo apt-get upgrade -y
+install_common_packages() {
+    sudo apt-get update && sudo apt-get upgrade -y
 
-sudo apt-get install -y curl vim tree git gcc build-essential make clang clang-format
+    sudo apt-get install -y curl vim tree git gcc build-essential make clang clang-format
 
-sudo apt-get install -y \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+    sudo apt-get install -y \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
 
-# sudo add-apt-repository ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get upgrade -y
+    # sudo add-apt-repository ppa:git-core/ppa
+    sudo apt-get update
+    sudo apt-get upgrade -y
 
-sudo apt-get install -y default-jdk
+    sudo apt-get install -y default-jdk
 
-sudo apt-get install -y python-is-python3 python3-pip
+    sudo apt-get install -y python-is-python3 python3-pip
 
-sudo apt-get install -y default-jre
+    sudo apt-get install -y default-jre
+}
 
 ## Comment/uncomment programs as desired and re-run idempotent script.
 
-#install_ansible
-install_docker
-install_fzf
-install_golang
-install_hadolint
-install_hashicorp
-install_helm
-install_shellcheck
-install_k9s
-install_kind
-install_kubectl
-install_kubie
+# disable_bell
+# install_common_packages
+# install_ansible
+install_azure_cli
+# install_docker
+# install_fzf
+# install_golang
+# install_hadolint
+# install_hashicorp
+# install_helm
+# install_shellcheck
+# install_k9s
+# install_kind
+# install_kubectl
+# install_kubie
