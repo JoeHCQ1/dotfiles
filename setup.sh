@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eo pipefail
 
 ###############################################################################
 # Start Utility Functions                                                     #
@@ -74,7 +74,7 @@ function add_line_to_file() {
     then
         info "${2} already contains '${1}'"
     else
-        if [ "${3}" == "sudo" ]
+        if [ "$3" == "sudo" ]
         then
             info "adding ${1} to ${2} with sudo"
             echo "${1}" | sudo tee "${2}" >>/dev/null
@@ -133,7 +133,7 @@ install_ansible() {
     info "adding ansible ppa"
     sudo add-apt-repository --yes --update ppa:ansible/ansible
     info "installing ansible"
-    sudo apt install ansible
+    sudo apt install -y ansible
 }
 
 install_docker() {
@@ -207,6 +207,35 @@ install_hadolint() {
     mv "${executable_release_name}" "${dest}"
 
     make_executable "${dest}"
+}
+
+install_hashicorp() {
+    # From https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/azure-get-started
+    # Install pre-requisite packages
+    sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+    # Install the HashiCorp GPG key
+    wget -O- https://apt.releases.hashicorp.com/gpg | \
+        gpg --dearmor | \
+        sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    # Verify the key's fingerprint    
+    gpg --no-default-keyring \
+    --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    --fingerprint
+
+    # Verify fingerprint (copied from URL above)
+    # http://bitthinker.com/blog/en/develop/how-to-press-any-key-to-continue-in-bash
+    read -n 1 -r -s -p "Press any key if fingerprint matches: E8A0 32E0 94D8 EB4E A189 D270 DA41 8C88 A321 9F7B" key
+
+    # Add HashiCorp repository to system
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+    # Install all of Hashicorp
+    sudo apt update && sudo apt-get install -y terraform vault consul nomad packer
+
+    # Enable terraform bash completion
+    terraform -install-autocomplete || grep "already installed"
 }
 
 install_helm() {
@@ -289,8 +318,7 @@ install_shellcheck() {
     get_latest_github_release $base_url
 
     pkg="shellcheck-${release}.linux.x86_64.tar.xz"
-    executable
-    _internal_path="shellcheck-${release}/shellcheck"
+    executable_internal_path="shellcheck-${release}/shellcheck"
     executable_name="shellcheck"
     dest="${LOCAL_BIN}"/"${executable_name}"
 
@@ -319,7 +347,7 @@ sudo apt-get install -y \
     gnupg \
     lsb-release
 
-sudo add-apt-repository ppa:git-core/ppa
+# sudo add-apt-repository ppa:git-core/ppa
 sudo apt-get update
 sudo apt-get upgrade -y
 
@@ -331,11 +359,12 @@ sudo apt-get install -y default-jre
 
 ## Comment/uncomment programs as desired and re-run idempotent script.
 
-install_ansible
+#install_ansible
 install_docker
 install_fzf
 install_golang
 install_hadolint
+install_hashicorp
 install_helm
 install_shellcheck
 install_k9s
