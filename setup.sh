@@ -69,16 +69,17 @@ function make_executable() {
 }
 
 function add_line_to_file() {
-    [ -f "${2}" ] || touch "${2}"
     if [ ! -z "$(grep "${1}" "${2}")" ]
     then
         info "${2} already contains '${1}'"
     else
         if [ "$3" == "sudo" ]
         then
+            [ -f "${2}" ] || sudo touch "${2}"
             info "adding ${1} to ${2} with sudo"
             echo "${1}" | sudo tee "${2}" >>/dev/null
         else
+            [ -f "${2}" ] || touch "${2}"
             info "adding ${1} to ${2}"
             echo "${1}" | tee "${2}" >>/dev/null
         fi
@@ -280,8 +281,10 @@ install_kind() {
     info "Curling URL: ${download_url}"
     curl -LOs "${download_url/'//'/'/'}"
 
-    info "Moving executable to destination."  
+    info "Moving executable to destination."
     mv "${executable_release_name}" "${dest}"
+    info "Making kind executable."
+    chmod +x ${dest}
 }
 
 install_kubectl() {
@@ -368,18 +371,18 @@ install_common_packages() {
 
 ## Comment/uncomment programs as desired and re-run idempotent script.
 
-# disable_bell
-# install_common_packages
-# install_ansible
+disable_bell
+install_common_packages
+install_ansible
 install_azure_cli
-# install_docker
-# install_fzf
-# install_golang
-# install_hadolint
-# install_hashicorp
-# install_helm
-# install_shellcheck
-# install_k9s
-# install_kind
-# install_kubectl
-# install_kubie
+install_docker
+install_fzf
+install_golang
+install_hadolint
+install_hashicorp
+install_helm
+install_shellcheck
+install_k9s
+install_kind
+install_kubectl
+install_kubie
