@@ -386,3 +386,6 @@ install_k9s
 install_kind
 install_kubectl
 install_kubie
+
+# Install istioctl
+curl -L https://istio.io/downloadIstio | sh -
