@@ -14,7 +14,7 @@ alias gp="git push"
 alias gpf="git push --force"
 
 ## Alias VIM to avoid frustrating state of running vi
-if which vim >>/dev/null
+if command -v vim &> /dev/null
 then
     alias vi=vim
     alias v=vim
@@ -22,7 +22,7 @@ fi
 
 ## Enable kubectl bash completion
 ## and setup kubectl bash completion to work with the alias `k`
-if which kubectl >>/dev/null
+if command -v kubectl &> /dev/null
 then
     source <(kubectl completion bash)
     alias k=kubectl
@@ -31,7 +31,7 @@ fi
 
 ## Enable helm bash completion
 ## and setup kubectl bash completion to work with the alias `chart`
-if which helm >>/dev/null
+if command -v helm &> /dev/null
 then
     source <(helm completion bash)
     alias chart=helm
@@ -39,32 +39,32 @@ then
 fi
 
 ## allow k9s mistype k9 to work
-if which k9s >>/dev/null
+if command -v k9s &> /dev/null
 then
     alias k9=k9s
 fi
 
 ## Setup retro kubectx and kubens aliases for kubie
-if which kubie >>/dev/null
+if command -v kubie &> /dev/null
 then
     alias kx="kubie ctx"
     alias ks="kubie ns"
 fi
 
 ## Alias a recursive shellcheck
-if which shellcheck >>/dev/null
+if command -v shellcheck &> /dev/null
 then
     alias shellcheckr="shellcheck \$(find . -type f -name \"*.sh\")"
 fi
 
 ## Docker is such a long word, though ergonmic to type, so not too bad
-if which docker >>/dev/null
+if command -v docker &> /dev/null
 then
     alias dk="docker"
 fi
 
 ## Docker-compose is really long, dc is much faster
-if which docker-compose >>/dev/null
+if command -v docker-compose &> /dev/null
 then
     alias dc="docker-compose"
 fi
@@ -98,12 +98,12 @@ isWinDir () {
 }
 
 git () {
-        if isWinDir
-        then
-                git.exe "$@"
-        else
-                /usr/bin/git "$@"
-        fi
+    if isWinDir
+    then
+        git.exe "$@"
+    else
+        /usr/bin/git "$@"
+    fi
 }
 
 ###############################################################################
@@ -130,7 +130,8 @@ export PATH
 ## Setup Git prompt - get the file into HOME
 if [ ! -f "${HOME}/.git-sh-prompt.sh" ];
 then
-    cp /usr/lib/git-core/git-sh-prompt ~/.git-sh-prompt.sh
+    # This is /usr/lib/git-core in debian, /usr/libexec/git-core in fedora
+    cp /usr/lib/git-core/git-sh-prompt ~/.git-sh-prompt.sh || cp /usr/libexec/git-core/git-sh-prompt ~/.git-sh-prompt.sh
 fi
 . "${HOME}/.git-sh-prompt.sh"
 
@@ -150,3 +151,4 @@ emoji () {
 
 ## Use custom prompt!
 PS1='\[\e[0;37m\]\u \[\e[0;32m\]\w\[\e[0m\]$(__git_ps1 " (%s)") \[\e[1;31m\]\t\[\e[0m\] $(emoji)\n\[\e[0;37m\]λ\[\e[0m\] '
+
