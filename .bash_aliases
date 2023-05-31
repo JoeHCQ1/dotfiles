@@ -127,11 +127,25 @@ export GOPATH
 PATH="/usr/local/go/bin/":"${GOPATH}/bin":"${PATH}"
 export PATH
 
-## Setup Git prompt - get the file into HOME
 if [ ! -f "${HOME}/.git-sh-prompt.sh" ];
 then
-    # This is /usr/lib/git-core in debian, /usr/libexec/git-core in fedora
-    cp /usr/lib/git-core/git-sh-prompt ~/.git-sh-prompt.sh || cp /usr/libexec/git-core/git-sh-prompt ~/.git-sh-prompt.sh
+    if [ -f /etc/os-release ]; then
+        # this will load the OS variables
+        . /etc/os-release
+
+        if [[ $ID_LIKE =~ (^| )debian($| ) ]]; then
+            echo "Running on a system similar to Debian. Detected: $ID"
+            cp /usr/lib/git-core/git-sh-prompt ~/.git-sh-prompt.sh 
+        elif [[ $ID_LIKE =~ (^| )fedora($| ) ]]; then
+            echo "Running on a system similar to Fedora. Detected: $ID"
+            cp /usr/share/git-core/contrib/completion/git-prompt.sh ~/.git-sh-prompt.sh
+        else
+            echo "Not running on Debian or a system similar to Fedora. Detected: $ID"
+            echo "Can't confidently say where your \`git-sh-prompt\` script is."
+        fi
+    else
+        echo "Cannot determine the system OS. /etc/os-release file does not exist."
+    fi
 fi
 . "${HOME}/.git-sh-prompt.sh"
 
