@@ -350,7 +350,7 @@ install_shellcheck() {
 install_common_packages() {
     sudo apt-get update && sudo apt-get upgrade -y
 
-    sudo apt-get install -y curl vim tree git gcc build-essential make clang clang-format
+    sudo apt-get install -y curl vim tree git gcc build-essential make clang clang-format snapd
 
     sudo apt-get install -y \
         ca-certificates \
