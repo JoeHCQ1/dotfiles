@@ -347,6 +347,14 @@ install_shellcheck() {
     make_executable "${dest}"
 }
 
+install_nvm_npm() {
+    # https://github.com/nvm-sh/nvm#installing-and-updating
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    source ~/.bashrc
+    nvm install --lts
+    nvm use --lts
+}
+
 install_common_packages() {
     sudo apt-get update && sudo apt-get upgrade -y
 
@@ -378,6 +386,7 @@ install_azure_cli
 install_docker
 install_fzf
 install_golang
+install_nvm_npm
 install_hadolint
 install_hashicorp
 install_helm
