@@ -347,12 +347,13 @@ install_shellcheck() {
     make_executable "${dest}"
 }
 
-install_nvm_npm() {
+install_nvm_npm_yarn() {
     # https://github.com/nvm-sh/nvm#installing-and-updating
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
     source ~/.bashrc
     nvm install --lts
     nvm use --lts
+    npm install --global yarn
 }
 
 install_common_packages() {
