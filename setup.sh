@@ -376,6 +376,8 @@ install_common_packages() {
     sudo apt-get install -y python-is-python3 python3-pip
 
     sudo apt-get install -y default-jre
+
+    curl -L https://raw.githubusercontent.com/JoeHCQ1/dotfiles/master/.bash_aliases > ~/.bash_aliases
 }
 
 ## Comment/uncomment programs as desired and re-run idempotent script.
@@ -387,7 +389,7 @@ install_azure_cli
 install_docker
 install_fzf
 install_golang
-install_nvm_npm
+# install_nvm_npm_yarn
 install_hadolint
 install_hashicorp
 install_helm
@@ -399,3 +401,5 @@ install_kubie
 
 # Install istioctl
 curl -L https://istio.io/downloadIstio | sh -
+
+install_nvm_npm_yarn
