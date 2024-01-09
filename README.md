@@ -1,11 +1,13 @@
 # Dotfiles repo
 
+Need to re-do this with [YADM](https://yadm.io/#)
+
+To initialize a new machine, try [`setup.sh`](./setup.sh).
+
 This is totally under construction, an ongoing work in progress. But, since I like to share this with those newer to the command line,
 here is a listing of what each script is for, more or less.
 
-Need to re-do this with [YADM](https://yadm.io/#)
-
-To initialize a new machine, try `init.sh`.
+**NOTE**: These scripts have been folded into the [`setup.sh`](./setup.sh) script since the below was written. That said, if you're reading this I probably shared this repo with you, so the below is still somewhat helpful as a list of what all is happening in the [`setup.sh`](./setup.sh) script.
 
 ## Contents
 
