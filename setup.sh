@@ -187,9 +187,12 @@ install_fzf() {
 install_golang() {
     # Update the link here: https://go.dev/dl/
     pushd /tmp
-    curl -LO https://go.dev/dl/go1.19.linux-amd64.tar.gz
 
-    sudo tar -C /usr/local -xvf go1.19.linux-amd64.tar.gz
+    sudo rm -rf /usr/local/go
+
+    curl -LO https://go.dev/dl/go1.22.5.linux-amd64.tar.gz
+
+    sudo tar -C /usr/local -xvf go1.22.5.linux-amd64.tar.gz
 
     popd
 }
@@ -232,7 +235,7 @@ install_hashicorp() {
 
     # Verify fingerprint (copied from URL above)
     # http://bitthinker.com/blog/en/develop/how-to-press-any-key-to-continue-in-bash
-    read -n 1 -r -s -p "Press any key if fingerprint matches: E8A0 32E0 94D8 EB4E A189 D270 DA41 8C88 A321 9F7B" key
+    read -n 1 -r -s -p "Press any key if fingerprint matches: 798A EC65 4E5C 1542 8C8E 42EE AA16 FCBC A621 E701" key
 
     # Add HashiCorp repository to system
     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
@@ -251,6 +254,10 @@ install_helm() {
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     chmod 700 get_helm.sh
     ./get_helm.sh
+
+    helm completion bash > /tmp/helm
+    sudo mv /tmp/helm /etc/bash_completion.d/helm
+
     popd
 }
 
@@ -297,6 +304,10 @@ install_kubectl() {
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
     kubectl version --client
+
+    kubectl completion bash > /tmp/kubectl
+    sudo mv /tmp/kubectl /etc/bash_completion.d/kubectl
+
 }
 
 install_kubie() {
@@ -376,23 +387,50 @@ install_common_packages() {
     sudo apt-get install -y python-is-python3 python3-pip
 
     sudo apt-get install -y default-jre
+}
 
-    curl -L https://raw.githubusercontent.com/JoeHCQ1/dotfiles/master/.bash_aliases > ~/.bash_aliases
+install_zarf() {
+    ZARF_VERSION=$(curl -sIX HEAD https://github.com/zarf-dev/zarf/releases/latest | grep -i ^location: | grep -Eo 'v[0-9]+.[0-9]+.[0-9]+')
+
+    curl -sL "https://github.com/zarf-dev/zarf/releases/download/${ZARF_VERSION}/zarf_${ZARF_VERSION}_Linux_amd64" -o zarf
+    chmod +x zarf
+    mv zarf ~/.local/bin/zarf
+
+    zarf completion bash > /tmp/zarf 
+    sudo mv /tmp/zarf /etc/bash_completion.d/zarf
+}
+
+install_uds_cli(){
+    export UDS_CLI_VERSION=$(curl -sIX HEAD https://github.com/defenseunicorns/uds-cli/releases/latest | grep -i ^location: | grep -Eo 'v[0-9]+.[0-9]+.[0-9]+')
+
+    curl -sL "https://github.com/defenseunicorns/uds-cli/releases/download/${UDS_CLI_VERSION}/uds-cli_${UDS_CLI_VERSION}_Linux_amd64" -o uds
+    chmod +x uds
+    mv uds ~/.local/bin
+
+    uds completion bash > /tmp/uds
+    sudo mv /tmp/uds /etc/bash_completion.d/uds
+}
+
+install_k3d() {
+    curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+    k3d completion bash > /tmp/k3d 
+    sudo mv /tmp/k3d /etc/bash_completion.d/k3d
 }
 
 ## Comment/uncomment programs as desired and re-run idempotent script.
 
 disable_bell
 install_common_packages
-install_ansible
-install_azure_cli
+# install_ansible
+# install_azure_cli
 install_docker
 install_fzf
-install_golang
-# install_nvm_npm_yarn
+#install_golang
 install_hadolint
-install_hashicorp
+# install_hashicorp
 install_helm
+install_zarf
 install_shellcheck
 install_k9s
 install_kind
@@ -400,6 +438,8 @@ install_kubectl
 install_kubie
 
 # Install istioctl
-curl -L https://istio.io/downloadIstio | sh -
+# curl -L https://istio.io/downloadIstio | sh -
 
 install_nvm_npm_yarn
+
+# curl -L https://raw.githubusercontent.com/JoeHCQ1/dotfiles/master/.bash_aliases > ~/.bash_aliases

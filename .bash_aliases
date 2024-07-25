@@ -24,16 +24,12 @@ fi
 ## and setup kubectl bash completion to work with the alias `k`
 if command -v kubectl &> /dev/null
 then
-    source <(kubectl completion bash)
     alias k=kubectl
     complete -F __start_kubectl k
 fi
 
-## Enable helm bash completion
-## and setup kubectl bash completion to work with the alias `chart`
 if command -v helm &> /dev/null
 then
-    source <(helm completion bash)
     alias chart=helm
     complete -F __start_helm chart
 fi
